@@ -1,8 +1,11 @@
 # DoorDash Merchant Intelligence Platform
 
+## Live Dashboard (Snowflake, Sigma, Python, PySpark, DBT, Great Expectations, Airflow, CI/CD
+[DoorDash Merchant Intelligence Platform (Sigma)](https://app.sigmacomputing.com/omc31389/workbook/DoorDash-Merchant-Intelligence-Platform-4nEFQjxFJTkt572hZojZuK)
+
+
 A production-grade lakehouse analytics platform built to mirror DoorDash's
-internal data architecture — demonstrating the exact stack used by their
-Analytics Engineering team.
+internal data architecture — demonstrating the exact stack used.
 
 **Dataset:** [Yelp Open Dataset](https://www.yelp.com/dataset) (150K+ businesses, 7M+ reviews)
 **License:** Yelp Open Dataset License (academic/personal use)
