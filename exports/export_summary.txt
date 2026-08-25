@@ -1,0 +1,7 @@
+Export generated: 2026-08-25T01:05:07.935961
+Source: ./dbt_project/dev.duckdb
+
+mart_merchant_performance: 2,000 rows, 294.8 KB
+mart_cuisine_market_share: 100 rows, 5.6 KB
+mart_reviewer_cohort_retention: 60 rows, 2.0 KB
+mart_delivery_operations: 4,974 rows, 751.6 KB

@@ -1,0 +1,66 @@
+name: CI — dbt + Great Expectations
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  DBT_PROFILES_DIR: ./dbt_project
+
+jobs:
+
+  dbt-ci:
+    name: dbt compile + test (DuckDB)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate synthetic orders (schema validation only)
+        run: |
+          python synthetic/generate_orders.py \
+            --n_orders 10000 \
+            --output ./data/synthetic/orders.parquet
+        # Note: no Yelp data in CI — generates placeholder business IDs
+
+      - name: dbt deps
+        run: cd dbt_project && dbt deps --profiles-dir .
+
+      - name: dbt compile (catch SQL errors on every PR)
+        run: cd dbt_project && dbt compile --target dev --profiles-dir .
+
+      - name: Seed test data
+        run: cd dbt_project && dbt seed --target dev --profiles-dir .
+
+      - name: dbt run — staging models
+        run: cd dbt_project && dbt run --select staging --target dev --profiles-dir .
+
+      - name: Great Expectations — validate silver layer
+        run: python great_expectations/validate_silver.py
+        # Fails the build if any critical GE check fails
+
+      - name: dbt run — intermediate + mart models
+        run: cd dbt_project && dbt run --select intermediate marts --target dev --profiles-dir .
+
+      - name: dbt test — all models
+        run: cd dbt_project && dbt test --target dev --profiles-dir .
+
+      - name: dbt docs generate
+        run: cd dbt_project && dbt docs generate --target dev --profiles-dir .
+
+      - name: Upload dbt artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbt-docs
+          path: dbt_project/target/
+        if: always()

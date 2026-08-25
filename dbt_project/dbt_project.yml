@@ -1,0 +1,38 @@
+name: 'doordash_merchant_intelligence'
+version: '1.0.0'
+config-version: 2
+
+profile: 'doordash_merchant_intelligence'
+
+model-paths: ["models"]
+test-paths:  ["tests"]
+seed-paths:  ["seeds"]
+macro-paths: ["macros"]
+
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  doordash_merchant_intelligence:
+
+    staging:
+      +materialized: view
+      +schema: staging
+
+    intermediate:
+      +materialized: table
+      +schema: intermediate
+
+    marts:
+      +materialized: table
+      +schema: marts
+      # Partition mart tables for Trino query performance
+      # (documented in EXPLAIN plan analysis)
+      merchant_performance:
+        +tags: ["merchant", "core"]
+      cuisine_market_share:
+        +tags: ["merchant", "market"]
+      reviewer_cohort_retention:
+        +tags: ["consumer", "cohort"]
+      delivery_operations:
+        +tags: ["operations", "delivery"]

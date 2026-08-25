@@ -1,0 +1,31 @@
+# profiles.yml
+# Two targets:
+#   trino — production (Docker Compose stack)
+#   dev   — local DuckDB for fast iteration without Docker
+
+doordash_merchant_intelligence:
+
+  target: dev  # default to local dev
+
+  outputs:
+
+    # ── Production: Trino → Delta Lake on MinIO ────────────────────────────
+    trino:
+      type: trino
+      method: none
+      host: localhost
+      port: 8080
+      user: gretchen
+      database: hive
+      schema: doordash
+      threads: 4
+      http_scheme: http
+
+    # ── Local dev: DuckDB (same SQL semantics, no Docker needed) ──────────
+    # DuckDB is Trino-compatible SQL — models run identically.
+    # Switch to trino target before presenting demos or screenshots.
+    dev:
+      type: duckdb
+      path: ./dev.duckdb
+      schema: doordash
+      threads: 4

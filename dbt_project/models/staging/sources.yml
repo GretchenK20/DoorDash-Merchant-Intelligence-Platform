@@ -1,0 +1,75 @@
+version: 2
+
+sources:
+
+  - name: bronze
+    description: >
+      Raw bronze layer — Yelp Open Dataset ingested via PySpark into
+      Delta Lake on MinIO. Tables registered in Hive Metastore.
+    schema: bronze
+
+    tables:
+
+      - name: businesses
+        description: >
+          Raw Yelp business records. 150K+ businesses across the US.
+          Partitioned by state for query efficiency.
+        columns:
+          - name: business_id
+            description: Unique business identifier (Yelp UUID)
+            tests:
+              - not_null
+              - unique
+          - name: name
+            tests: [not_null]
+          - name: state
+            tests: [not_null]
+          - name: stars
+            tests:
+              - not_null
+              - accepted_values:
+                  values: [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0]
+          - name: review_count
+            tests: [not_null]
+
+      - name: reviews
+        description: >
+          Raw Yelp reviews. 7M+ reviews. Partitioned by review_year.
+        columns:
+          - name: review_id
+            tests: [not_null, unique]
+          - name: business_id
+            tests: [not_null]
+          - name: stars
+            tests: [not_null]
+          - name: review_date
+            tests: [not_null]
+
+      - name: checkins
+        description: >
+          Yelp checkin events (exploded from comma-separated timestamps).
+          Proxy for foot traffic / demand signal.
+        columns:
+          - name: business_id
+            tests: [not_null]
+          - name: checkin_at
+            tests: [not_null]
+
+  - name: synthetic
+    description: >
+      Synthetic order events generated to add delivery operations dimension.
+      Clearly labeled: _is_synthetic=True on every row.
+    schema: synthetic
+
+    tables:
+      - name: orders
+        description: 500K synthetic order events keyed to real Yelp business_ids.
+        columns:
+          - name: order_id
+            tests: [not_null, unique]
+          - name: business_id
+            tests: [not_null]
+          - name: order_status
+            tests:
+              - accepted_values:
+                  values: ["delivered", "cancelled"]

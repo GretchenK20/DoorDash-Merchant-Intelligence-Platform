@@ -1,0 +1,63 @@
+version: 2
+
+models:
+
+  - name: mart_merchant_performance
+    description: Canonical merchant performance mart — composite scoring and tiers
+    columns:
+      - name: business_id
+        tests: [not_null, unique]
+      - name: state
+        tests: [not_null]
+      - name: primary_cuisine
+        tests: [not_null]
+      - name: composite_score
+        description: >
+          Weighted composite (40% stars, 35% review velocity, 25% checkins).
+          Nullable for merchants with zero reviews or checkins.
+      - name: performance_tier
+        tests:
+          - not_null
+          - accepted_values:
+              values: [1, 2, 3, 4, 5]
+      - name: tier_label
+        tests:
+          - accepted_values:
+              values: ['Elite', 'Strong', 'Average', 'Below Average', 'Low']
+
+  - name: mart_cuisine_market_share
+    description: Cuisine market penetration by state
+    columns:
+      - name: state
+        tests: [not_null]
+      - name: primary_cuisine
+        tests: [not_null]
+      - name: merchant_count
+        tests: [not_null]
+      - name: market_share_pct
+        tests: [not_null]
+
+  - name: mart_reviewer_cohort_retention
+    description: Monthly reviewer cohort retention
+    columns:
+      - name: cohort_month
+        tests: [not_null]
+      - name: months_since_cohort
+        tests: [not_null]
+      - name: retained_users
+        tests: [not_null]
+      - name: retention_rate_pct
+        tests: [not_null]
+
+  - name: mart_delivery_operations
+    description: Delivery operations metrics (synthetic data — labeled)
+    columns:
+      - name: business_id
+        tests: [not_null]
+      - name: order_month
+        tests: [not_null]
+      - name: _is_synthetic_data
+        tests:
+          - accepted_values:
+              values: [true]
+              quote: false
