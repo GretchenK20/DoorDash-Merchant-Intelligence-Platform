@@ -33,10 +33,10 @@ from airflow.utils.trigger_rule import TriggerRule
 # ── DAG Config ────────────────────────────────────────────────────────────────
 
 DEFAULT_ARGS = {
-    "owner":            "gretchen.kolthoff",
+    "owner":            "airflow",
     "depends_on_past":  False,
     "email_on_failure": True,
-    "email":            ["gretchenkolt@icloud.com"],
+    "email":            ["your-email@example.com"],
     "retries":          2,
     "retry_delay":      timedelta(minutes=5),
 }

@@ -1,6 +1,6 @@
 # DoorDash Merchant Intelligence Platform
 
-## Live Dashboard (Snowflake, Sigma, Python, PySpark, DBT, Great Expectations, Airflow, CI/CD
+## Live Dashboard (Snowflake, Sigma, Python, PySpark, DBT, Great Expectations, Airflow, CI/CD)
 [DoorDash Merchant Intelligence Platform (Sigma)](https://app.sigmacomputing.com/omc31389/workbook/DoorDash-Merchant-Intelligence-Platform-4nEFQjxFJTkt572hZojZuK)
 
 
